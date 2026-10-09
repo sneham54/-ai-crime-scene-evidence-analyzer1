@@ -1,0 +1,31 @@
+.venv/
+Runs/
+_debug/
+__pycache__/
+*.pyc
+.env
+.env.*
+.jwt_secret
+backend/.jwt_secret
+node_modules/
+.vscode/
+backend/uploads/
+# Virtual environments
+backend/venv/
+backend/.venv/
+
+# Large datasets
+backend/datasets/
+# Python virtual environments
+.venv/
+venv/
+
+# YOLO training outputs
+runs/
+Runs/
+
+# Temporary files
+*.log
+.DS_Store
+Thumbs.db
+*.bak

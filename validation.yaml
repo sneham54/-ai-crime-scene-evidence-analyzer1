@@ -1,0 +1,14 @@
+path: C:/Users/admin/OneDrive/Documents/ai crime/weapon-detection.yolov8
+train: subset1000/train/images
+val: valid/images
+nc: 9
+names:
+  0: gun
+  1: hammer
+  2: helmet
+  3: knife
+  4: mask
+  5: person
+  6: pistol
+  7: rifle
+  8: weapon

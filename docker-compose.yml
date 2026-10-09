@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: crime_evidence_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  # Optional: run backend inside Docker later
+  # backend:
+  #   build: ./backend
+  #   ports:
+  #     - "5000:5000"
+  #   environment:
+  #     - MONGO_URI=mongodb://mongodb:27017
+  #     - DB_NAME=crime_evidence_db
+  #   depends_on:
+  #     - mongodb
+  #   volumes:
+  #     - ./backend:/app
+  #     - upload_data:/app/uploads
+
+volumes:
+  mongo_data:
+  # upload_data:
