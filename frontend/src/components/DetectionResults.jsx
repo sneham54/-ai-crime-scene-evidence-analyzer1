@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 import api, { BACKEND_URL } from '../services/api'
 
+function annotatedImageUrl(path) {
+  if (!path) return ''
+  return /^https?:\/\//i.test(path) ? path : `${BACKEND_URL}${path.startsWith('/') ? '' : '/'}${path}`
+}
+
 export default function DetectionResults({ result }) {
   const [reportLoading, setReportLoading] = useState(false)
   const [reportMsg, setReportMsg] = useState('')
@@ -156,10 +161,25 @@ export default function DetectionResults({ result }) {
 
       {result.annotated_image && (
         <div style={{ marginTop: 16 }}>
-          <p style={{ fontSize: 13, color: 'var(--muted)' }}>
-            Annotated image path: {result.annotated_image}
-          </p>
+          <h4>Annotated result</h4>
+          <img src={annotatedImageUrl(result.annotated_image)} alt="Annotated detection result"
+            style={{ maxWidth: '100%', maxHeight: 560, borderRadius: 8 }} />
         </div>
+      )}
+
+      {result.cnn_message && !result.cnn_available && (
+        <p style={{ color: 'var(--warning)', fontSize: 13 }}>CNN unavailable; showing YOLO-only results. {result.cnn_message}</p>
+      )}
+      {result.cnn_preprocessing?.source && (
+        <p style={{ color: 'var(--muted)', fontSize: 12 }}>CNN preprocessing: {result.cnn_preprocessing.source}</p>
+      )}
+      {result.comparison_available && (
+        <details style={{ marginTop: 12 }}>
+          <summary>Compare YOLO-only detections</summary>
+          <p style={{ color: 'var(--muted)', fontSize: 13 }}>
+            {(result.yolo_detections || []).map(d => `${d.class_name} ${(d.confidence * 100).toFixed(1)}% [${d.bbox.join(', ')}]`).join(' · ') || 'No detections'}
+          </p>
+        </details>
       )}
 
       {result.risk && (

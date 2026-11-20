@@ -26,6 +26,12 @@ Video analysis requires this custom checkpoint and validates its trained class n
 
 Four-class video analysis also requires a trained video-classifier checkpoint and its generated metadata. The video classifier does not modify the YOLO weights.
 
+### Select the video-classifier checkpoint
+
+`backend/.env` reads `VIDEO_MODEL_PATH`; the default remains `models/video_classifier.pth`. To opt in to the candidate, set `VIDEO_MODEL_PATH=models/video_classifier_v2.pth` and restart the backend. To roll back, restore `models/video_classifier.pth`. The repo-root form `backend/models/video_classifier_v2.pth` is also accepted. Both checkpoints use the existing strict CNNLSTM loader and the class order `Assault`, `Robbery`, `Shooting`, `Normal`.
+
+The saved same-test-set evaluation (62 samples, seed 42, shared split manifest) scores the original at 85.48% accuracy, 0.8389 macro F1, and 0.9143 Shooting F1; v2 scores 83.87%, 0.8252, and 0.8485 respectively. Keep the original selected unless a later evaluation justifies promoting the candidate.
+
 ## 2. Run Backend
 
 ```powershell
@@ -111,13 +117,30 @@ Keep Ollama running while using the chatbot. Set `OLLAMA_HOST` or `OLLAMA_MODEL`
 
 Upload View A + View B → Run Scene Change Detection → change score, SSIM, heatmap.
 
-## 9. Optional MongoDB
+## 9. Docker Compose
 
 ```powershell
-docker-compose up -d
+docker compose config
+docker compose up --build -d
+docker compose ps
 ```
 
-Demo mode works without MongoDB.
+Open the dashboard at **http://localhost:5173**. The frontend proxies `/api` requests to Flask inside Compose, and Flask connects to `mongodb:27017` using the existing `crime_evidence_db` database. MongoDB data and backend uploads use persistent named volumes, so restarting containers does not reset them.
+
+To inspect service output:
+
+```powershell
+docker compose logs -f frontend backend mongodb
+```
+
+Set `MONGO_DB_NAME`, `SECRET_KEY`, and `JWT_SECRET_KEY` in a local, untracked `.env` file when overriding defaults. Copy `.env.example` as a starting point. Never put production credentials in the Compose file. The dashboard shows MongoDB-backed counts as unavailable while the database cannot be reached; it does not substitute training catalogs or local artifacts for application records.
+
+The optional read-only dataset and saved tracking-result mounts in Compose expose local `datasets/` and `backend/tracked_results_*` content to the Evidence Library catalog. These inventory counts remain separate from persisted application evidence and analysis counts.
 
 Group: Jahnavi V · Rakshitha J M · Sneha M  
 Guide: Prof. Ashfaq Ahmed R
+# Dataset catalog and Ollama connection (Windows Docker Desktop)
+
+The backend catalog reads the existing source dataset through a read-only bind mount. Set `SOURCE_DATASET_PATH` in the repository `.env` to the host folder containing `Assault`, `Shooting`, `Robbery`, and `Normal`; the current local dataset is `C:/Users/admin/OneDrive/Documents/crime_video_dataset`. Docker Compose mounts it at `/data/source-videos:ro`. Do not copy the dataset into this repository. A missing mount is reported as unavailable, not as an empty inventory.
+
+Ollama stays on its configured host and uses the existing chatbot API. Native Flask defaults to `OLLAMA_BASE_URL=http://127.0.0.1:11434`; Docker Compose defaults to `http://host.docker.internal:11434`. `OLLAMA_MODEL` selects the already installed model, and `/api/chatbot/health` reports reachability and model availability without pulling anything. Install a missing model explicitly on the Ollama host only if desired. On Windows, if Ollama only binds to loopback and Docker cannot reach it, set `OLLAMA_HOST=0.0.0.0:11434` in Ollama's environment and restart Ollama. Restrict Windows Firewall access to trusted/local Docker traffic; do not expose port 11434 to untrusted networks.

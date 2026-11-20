@@ -20,6 +20,7 @@ export default function Layout({ children }) {
     ['upload', '▧', 'Image Analysis'],
     ['video', '▶', 'Video Analysis'],
     ['results', '⌗', 'Detected Objects'],
+    ['evidence', '▣', 'Evidence Library'],
     ['scene', '◉', 'Scene Change'],
     ['risk', '△', 'Risk Analysis'],
     ['history', '▤', 'Case History'],

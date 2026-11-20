@@ -1,0 +1,2 @@
+video,frame,timestamp_seconds,class_id,class_name,confidence,track_id,x1,y1,x2,y2
+scene.mp4,5,8.0,0,person,0.8,7,1,1,20,25

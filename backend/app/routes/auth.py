@@ -3,41 +3,44 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from app.utils.security import hash_password, verify_password
 from app.models.user import create_user_doc, serialize_user
 from datetime import datetime, timedelta
+from pymongo.errors import PyMongoError
+import re
 
 bp = Blueprint("auth", __name__)
-_DEMO_USERS = {}
+
+
+def _database_unavailable():
+    state = current_app.extensions.get("mongo_connection_state", {})
+    return jsonify({
+        "error": "Authentication is temporarily unavailable because the user database cannot be reached.",
+        "code": "database_unavailable",
+        "error_type": state.get("error_type") or "DatabaseUnavailable",
+    }), 503
 
 @bp.route("/register", methods=["POST"])
 def register():
-    data = request.get_json() or {}
-    username = data.get("username", "").strip()
-    password = data.get("password", "")
+    data = request.get_json(silent=True) or {}
+    username = data.get("username")
+    password = data.get("password")
+    username = username.strip() if isinstance(username, str) else ""
 
     if not username or not password:
         return jsonify({"error": "Username and password required"}), 400
 
     db = current_app.db
     if db is None:
-        # Keep local/demo accounts usable for the current server session.
-        if username in _DEMO_USERS:
+        return _database_unavailable()
+
+    try:
+        if db.users.find_one({"username": username}):
             return jsonify({"error": "Username already exists"}), 409
-        _DEMO_USERS[username] = {
-            "password_hash": hash_password(password),
-            "role": "investigator",
-        }
-        token = create_access_token(identity=f"demo-{username}", expires_delta=timedelta(hours=12))
-        return jsonify({
-            "message": "Demo investigator registered",
-            "access_token": token,
-            "user": {"id": f"demo-{username}", "username": username, "role": "investigator"}
-        }), 201
 
-    if db.users.find_one({"username": username}):
-        return jsonify({"error": "Username already exists"}), 409
-
-    user_doc = create_user_doc(username, hash_password(password))
-    result = db.users.insert_one(user_doc)
-    user_doc["_id"] = result.inserted_id
+        user_doc = create_user_doc(username, hash_password(password))
+        result = db.users.insert_one(user_doc)
+        user_doc["_id"] = result.inserted_id
+    except PyMongoError:
+        current_app.logger.exception("User registration database operation failed")
+        return _database_unavailable()
 
     return jsonify({
         "message": "User registered successfully",
@@ -47,55 +50,53 @@ def register():
 
 @bp.route("/login", methods=["POST"])
 def login():
-    data = request.get_json() or {}
-    username = data.get("username", "").strip()
-    password = data.get("password", "")
+    data = request.get_json(silent=True) or {}
+    username = data.get("username")
+    password = data.get("password")
+    username = username.strip() if isinstance(username, str) else ""
 
     if not username or not password:
         return jsonify({"error": "Username and password required"}), 400
 
-    default_users = {
-        "investigator": "investigator",
-        "officer": "officer",
-    }
-
-    if username in default_users and password == "demo123":
-        role = default_users[username]
-        token = create_access_token(identity=f"demo-{username}", expires_delta=timedelta(hours=12))
-        return jsonify({
-            "access_token": token,
-            "user": {"id": f"demo-{username}", "username": username, "role": role}
-        })
-
     db = current_app.db
     if db is None:
-        # Demo mode without DB
-        demo_user = _DEMO_USERS.get(username)
-        if demo_user and verify_password(demo_user["password_hash"], password):
-            token = create_access_token(identity=f"demo-{username}", expires_delta=timedelta(hours=12))
-            return jsonify({
-                "access_token": token,
-                "user": {"id": f"demo-{username}", "username": username, "role": demo_user["role"]}
-            })
-        return jsonify({"error": "Invalid credentials. Create an investigator account or check your credentials."}), 401
+        return _database_unavailable()
 
-    user = db.users.find_one({"username": username})
-    if not user:
-        # Keep the credentials displayed by the frontend usable when a fresh
-        # MongoDB database has not yet been seeded with an investigator user.
-        demo_user = _DEMO_USERS.get(username)
-        if demo_user and verify_password(demo_user["password_hash"], password):
-            token = create_access_token(identity=f"demo-{username}", expires_delta=timedelta(hours=12))
-            return jsonify({
-                "access_token": token,
-                "user": {"id": f"demo-{username}", "username": username, "role": demo_user["role"]}
-            })
+    # The UI accepts either a badge/username or an email address. Existing
+    # accounts may store either identifier, so check both fields without
+    # creating or migrating user records. Email lookup is case-insensitive.
+    identifier_match = {"$or": [{"username": username}, {"email": username}]}
+    if "@" in username:
+        identifier_match["$or"][1] = {
+            "email": {"$regex": f"^{re.escape(username)}$", "$options": "i"}
+        }
+
+    try:
+        matching_users = list(db.users.find(identifier_match).limit(2))
+    except PyMongoError:
+        current_app.logger.exception("User lookup database operation failed")
+        return _database_unavailable()
+
+    if not matching_users:
+        return jsonify({"error": "Invalid credentials"}), 401
+    if len(matching_users) > 1:
+        current_app.logger.warning("Login identifier matched multiple user records")
+        return jsonify({"error": "Login identifier is ambiguous", "code": "ambiguous_login_identifier"}), 409
+    user = matching_users[0]
+
+    password_hash = user.get("password_hash")
+    try:
+        password_valid = bool(password_hash) and verify_password(password_hash, password)
+    except (TypeError, ValueError):
+        password_valid = False
+    if not password_valid:
         return jsonify({"error": "Invalid credentials"}), 401
 
-    if not verify_password(user["password_hash"], password):
-        return jsonify({"error": "Invalid credentials"}), 401
-
-    db.users.update_one({"_id": user["_id"]}, {"$set": {"last_login": datetime.utcnow()}})
+    try:
+        db.users.update_one({"_id": user["_id"]}, {"$set": {"last_login": datetime.utcnow()}})
+    except PyMongoError:
+        current_app.logger.exception("User login timestamp update failed")
+        return _database_unavailable()
     token = create_access_token(identity=str(user["_id"]), expires_delta=timedelta(hours=12))
 
     return jsonify({

@@ -1,0 +1,24 @@
+{
+  "manifest_rows": 400,
+  "source_videos_accessible": 400,
+  "human_review_rows_ready": 400,
+  "training_review_rows": 313,
+  "heldout_test_review_rows": 87,
+  "original_split_counts": {
+    "test": 61,
+    "train": 280,
+    "val": 59
+  },
+  "leakage_control_split_counts": {
+    "test": 87,
+    "train": 236,
+    "val": 77
+  },
+  "duplicate_groups": 100,
+  "duplicate_video_rows": 201,
+  "duplicate_cross_split_groups": 39,
+  "duplicate_label_conflict_groups": 1,
+  "split_adjusted_rows": 50,
+  "contact_sheets_extracted": 10,
+  "all_manual_annotation_fields_blank": true
+}

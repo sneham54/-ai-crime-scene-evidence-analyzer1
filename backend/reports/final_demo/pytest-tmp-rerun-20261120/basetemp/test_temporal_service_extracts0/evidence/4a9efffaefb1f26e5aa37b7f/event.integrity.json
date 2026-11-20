@@ -1,0 +1,7 @@
+{
+  "event_json_path": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\evidence\\4a9efffaefb1f26e5aa37b7f\\event.json",
+  "event_json_sha256": "049bdfab8ec5b51c6be5615aea394eed8a82a70c16b97b890af6127ebfb84e09",
+  "hash_scope": "exact event.json bytes",
+  "source_video_sha256": "1efa6bec820eabc18f5429887b056299e5a3595bc3eccdd7099c60920f7e4743",
+  "tracking_csv_sha256": "90e80b9e6e392e2642d9ea0049f50a20e348539e34326414c54cfc94c78c99cc"
+}

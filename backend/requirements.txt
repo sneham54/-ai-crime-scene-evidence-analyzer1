@@ -4,6 +4,7 @@ flask-jwt-extended==4.6.0
 pymongo==4.8.0
 python-dotenv==1.0.1
 ultralytics==8.2.82
+PyYAML==6.0.3
 lapx==0.10.0
 torchvision>=0.13.0
 opencv-python==4.10.0.84

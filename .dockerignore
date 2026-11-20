@@ -1,0 +1,33 @@
+.git
+.gitignore
+.venv
+venv
+__pycache__
+.pytest_cache
+.mypy_cache
+node_modules
+dist
+build
+
+# Training datasets and exports
+robbery_drive_recovery_export_*/
+robbery_activity_dataset/
+crime_video_dataset/
+crime_video_dataset_split/
+crime_tracking_results/
+shooting_yolo_training/
+shooting_yolo_training_v2/
+yolo_training/
+
+# Large training artifacts
+*.safetensors
+*.onnx
+*.engine
+*.pt
+*.pth
+*.ckpt
+
+# Temporary files
+*.log
+*.tmp
+.ipynb_checkpoints

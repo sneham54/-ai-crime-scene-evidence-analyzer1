@@ -4,11 +4,12 @@ import api from '../services/api'
 export default function HistoryLogs() {
   const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     api.get('/api/dashboard/history')
       .then(res => setLogs(res.data.logs || []))
-      .catch(() => setLogs([]))
+      .catch(err => setError(err.userMessage || err.response?.data?.message || 'Custody history could not be loaded.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -17,9 +18,11 @@ export default function HistoryLogs() {
       <h3 style={{ marginTop: 0 }}>Chain of Custody / History Logs</h3>
       {loading ? (
         <p style={{ color: 'var(--muted)' }}>Loading...</p>
+      ) : error ? (
+        <p role="alert" style={{ color: 'var(--muted)' }}>{error}</p>
       ) : logs.length === 0 ? (
         <p style={{ color: 'var(--muted)' }}>
-          No logs yet. (Requires MongoDB connection). Actions will be recorded after uploads and analysis.
+          No chain-of-custody entries are recorded for this evidence.
         </p>
       ) : (
         <table className="table">

@@ -1,0 +1,507 @@
+{
+  "evidence_id": "4a9efffaefb1f26e5aa37b7f",
+  "original_video": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\scene.mp4",
+  "original_video_name": "scene.mp4",
+  "original_video_sha256": "1efa6bec820eabc18f5429887b056299e5a3595bc3eccdd7099c60920f7e4743",
+  "source_video_verification": {
+    "verified": null,
+    "source_path": null,
+    "source_sha256": "1efa6bec820eabc18f5429887b056299e5a3595bc3eccdd7099c60920f7e4743"
+  },
+  "category": "Shooting",
+  "start_timestamp_sec": 1.0,
+  "end_timestamp_sec": 2.0,
+  "context_start_sec": 0.9,
+  "context_end_sec": 2.1,
+  "timestamp_mapping_status": "unverified_frame_index_fps_fallback",
+  "timestamp_basis": "unverified_frame_index_divided_by_reported_fps",
+  "timestamps_verified": false,
+  "verification_status": "unverified_candidate",
+  "classifier_confidence": null,
+  "classifier_metadata": {
+    "probabilities": {
+      "Shooting": 0.9
+    },
+    "temporal_windows": [
+      {
+        "start_timestamp_sec": 1,
+        "end_timestamp_sec": 2,
+        "label": "Shooting",
+        "confidence": 0.9,
+        "probabilities": {
+          "Assault": 0.02,
+          "Robbery": 0.02,
+          "Shooting": 0.9,
+          "Normal": 0.09999999999999998
+        }
+      }
+    ]
+  },
+  "source_fps": 10.0,
+  "source_frame_count": 30,
+  "manifest_record": {
+    "video": "scene.mp4",
+    "status": "completed",
+    "output_csv": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\detections.csv",
+    "output_video": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\videos\\annotated.mp4"
+  },
+  "detection_csv_source": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\detections.csv",
+  "source_frame_offset": 0,
+  "tracked_video_alignment": {
+    "verified": true,
+    "tracked_metadata": {
+      "frames": 30,
+      "fps": 10.0,
+      "width": 48,
+      "height": 32
+    }
+  },
+  "detections": [
+    {
+      "video": "scene.mp4",
+      "frame_number": 10,
+      "csv_frame_number": 10,
+      "timestamp_seconds": 1.0,
+      "csv_timestamp_seconds": 1.0,
+      "timestamp_source": "unverified_frame_index_fps_fallback",
+      "class_id": 0,
+      "class_name": "pistol",
+      "confidence": 0.9,
+      "track_id": "7",
+      "bbox": [
+        1.0,
+        1.0,
+        20.0,
+        25.0
+      ]
+    },
+    {
+      "video": "scene.mp4",
+      "frame_number": 11,
+      "csv_frame_number": 11,
+      "timestamp_seconds": 1.1,
+      "csv_timestamp_seconds": 1.1,
+      "timestamp_source": "unverified_frame_index_fps_fallback",
+      "class_id": 0,
+      "class_name": "person",
+      "confidence": 0.8,
+      "track_id": "7",
+      "bbox": [
+        1.0,
+        1.0,
+        20.0,
+        25.0
+      ]
+    }
+  ],
+  "tracking_groups": [
+    {
+      "track_id": "7",
+      "detections": [
+        {
+          "video": "scene.mp4",
+          "frame_number": 10,
+          "csv_frame_number": 10,
+          "timestamp_seconds": 1.0,
+          "csv_timestamp_seconds": 1.0,
+          "timestamp_source": "unverified_frame_index_fps_fallback",
+          "class_id": 0,
+          "class_name": "pistol",
+          "confidence": 0.9,
+          "track_id": "7",
+          "bbox": [
+            1.0,
+            1.0,
+            20.0,
+            25.0
+          ]
+        },
+        {
+          "video": "scene.mp4",
+          "frame_number": 11,
+          "csv_frame_number": 11,
+          "timestamp_seconds": 1.1,
+          "csv_timestamp_seconds": 1.1,
+          "timestamp_source": "unverified_frame_index_fps_fallback",
+          "class_id": 0,
+          "class_name": "person",
+          "confidence": 0.8,
+          "track_id": "7",
+          "bbox": [
+            1.0,
+            1.0,
+            20.0,
+            25.0
+          ]
+        }
+      ]
+    }
+  ],
+  "keyframe_timestamps": [
+    {
+      "frame_index": 10,
+      "timestamp_sec": 1.0,
+      "timestamp_mapping_status": "unverified_frame_index_fps_fallback",
+      "timestamps_verified": false
+    },
+    {
+      "frame_index": 11,
+      "timestamp_sec": 1.1,
+      "timestamp_mapping_status": "unverified_frame_index_fps_fallback",
+      "timestamps_verified": false
+    }
+  ],
+  "artifacts": {
+    "original_clip": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\evidence\\4a9efffaefb1f26e5aa37b7f\\original_clip.mp4",
+    "annotated_clip": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\evidence\\4a9efffaefb1f26e5aa37b7f\\annotated_clip.mp4",
+    "keyframes": [
+      "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\evidence\\4a9efffaefb1f26e5aa37b7f\\keyframes\\frame_00000010.jpg",
+      "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\evidence\\4a9efffaefb1f26e5aa37b7f\\keyframes\\frame_00000011.jpg"
+    ],
+    "annotated_keyframes": [
+      "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\evidence\\4a9efffaefb1f26e5aa37b7f\\annotated_keyframes\\frame_00000010.jpg",
+      "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\evidence\\4a9efffaefb1f26e5aa37b7f\\annotated_keyframes\\frame_00000011.jpg"
+    ],
+    "csv": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\evidence\\4a9efffaefb1f26e5aa37b7f\\detections.csv",
+    "json": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\evidence\\4a9efffaefb1f26e5aa37b7f\\event.json",
+    "integrity_manifest": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\evidence\\4a9efffaefb1f26e5aa37b7f\\event.integrity.json"
+  },
+  "created_at": "2026-11-20T13:33:58.068007+00:00",
+  "artifact_hashes": {
+    "original_clip": "ac2ff13ba442afa6b0dd866e02e32a3e4d03314c488ddb902e6b7499f4045e1c",
+    "annotated_clip": "ac2ff13ba442afa6b0dd866e02e32a3e4d03314c488ddb902e6b7499f4045e1c",
+    "keyframes_0": "6c73045efae6ccdd188ee63f0f28e9f9f7cc257a9bc83d5f4f80682016fd64c1",
+    "keyframes_1": "9a6b0b52dff33185022d5eea71cc7ac5b0fbadcf2686af887df7829457a9bca4",
+    "csv": "a6dd80c61e64ba7e50def04996c8434e6d2bc818ba80dfdbf4026a22c7e137d5"
+  },
+  "original_candidate_start_sec": 0.0,
+  "original_candidate_end_sec": 3.0,
+  "refined_start_sec": 1.0,
+  "refined_end_sec": 2.0,
+  "refinement_status": "refined",
+  "refinement_method": "classifier_primary_weighted_temporal_bins",
+  "evidence_score": 0.7575000000000001,
+  "supporting_detection_count": 2,
+  "supporting_track_ids": [
+    "7"
+  ],
+  "classifier_probabilities": {
+    "Assault": 0.02,
+    "Robbery": 0.02,
+    "Shooting": 0.9,
+    "Normal": 0.09999999999999998
+  },
+  "boundary_confidence": {
+    "start": 0.7575000000000001,
+    "end": 0.7575000000000001
+  },
+  "bin_seconds": 1.0,
+  "boundary_tolerance_sec": 0.0,
+  "available_modalities": [
+    "classifier",
+    "tracking",
+    "yolo"
+  ],
+  "configured_weights": {
+    "classifier": 0.7,
+    "yolo": 0.15,
+    "tracking": 0.15
+  },
+  "weights_calibration_status": "uncalibrated_configuration",
+  "timestamp_source": "csv_timestamp_or_frame_fps_fallback",
+  "csv_timing_validation": {
+    "verified": true,
+    "method": "frame_fps_fallback",
+    "p95_absolute_error_sec": 0.0,
+    "tolerance_sec": 0.25
+  },
+  "tracking_status_record": {
+    "video": "scene.mp4",
+    "status": "completed",
+    "output_csv": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\detections.csv",
+    "output_video": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\videos\\annotated.mp4",
+    "tracking_status_path": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\status.csv",
+    "artifact_selection": "unique_manifest_record",
+    "resolved_status": "completed",
+    "resolved_csv": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\detections.csv",
+    "resolved_video": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\videos\\annotated.mp4"
+  },
+  "tracking_csv_path": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\detections.csv",
+  "tracking_csv_sha256": "90e80b9e6e392e2642d9ea0049f50a20e348539e34326414c54cfc94c78c99cc",
+  "candidate_interval": {
+    "start_sec": 0.0,
+    "end_sec": 3.0
+  },
+  "refined_interval": {
+    "start_sec": 1.0,
+    "end_sec": 2.0
+  },
+  "evidence_clip_interval": {
+    "start_sec": 0.9,
+    "end_sec": 2.1
+  },
+  "limitations": [
+    "YOLO and tracking evidence support review but do not prove a crime.",
+    "Weights are uncalibrated; timestamp accuracy is not established without verified reference intervals."
+  ],
+  "temporal_evidence": {
+    "original_candidate_start_sec": 0.0,
+    "original_candidate_end_sec": 3.0,
+    "refined_start_sec": 1.0,
+    "refined_end_sec": 2.0,
+    "refinement_status": "refined",
+    "refinement_method": "classifier_primary_weighted_temporal_bins",
+    "evidence_score": 0.7575000000000001,
+    "supporting_detection_count": 2,
+    "supporting_track_ids": [
+      "7"
+    ],
+    "classifier_probabilities": {
+      "Assault": 0.02,
+      "Robbery": 0.02,
+      "Shooting": 0.9,
+      "Normal": 0.09999999999999998
+    },
+    "boundary_confidence": {
+      "start": 0.7575000000000001,
+      "end": 0.7575000000000001
+    },
+    "verification_status": "unverified_candidate",
+    "bin_seconds": 1.0,
+    "boundary_tolerance_sec": 0.0,
+    "score_bins": [
+      {
+        "start_sec": 0.0,
+        "end_sec": 1.0,
+        "score": null,
+        "modalities": {
+          "classifier": null,
+          "yolo": null,
+          "tracking": null
+        },
+        "classifier_probability": null,
+        "classifier_window_consistency": 1.0,
+        "available_modalities": [],
+        "supporting_detection_count": 0,
+        "supporting_track_ids": [],
+        "mean_detection_confidence": null,
+        "max_detection_confidence": null,
+        "observed_frame_count": 0,
+        "tracking_duration_sec": 0,
+        "max_detection_gap_sec": 0.0,
+        "tracking_continuity_score": null,
+        "track_fragmentation_count": 0,
+        "classifier_supported": false,
+        "supported": false
+      },
+      {
+        "start_sec": 1.0,
+        "end_sec": 2.0,
+        "score": 0.7575000000000001,
+        "modalities": {
+          "classifier": 0.9,
+          "yolo": 0.8500000000000001,
+          "tracking": 0.0
+        },
+        "classifier_probability": 0.9,
+        "classifier_window_consistency": 1.0,
+        "available_modalities": [
+          "classifier",
+          "tracking",
+          "yolo"
+        ],
+        "supporting_detection_count": 2,
+        "supporting_track_ids": [
+          "7"
+        ],
+        "mean_detection_confidence": 0.8500000000000001,
+        "max_detection_confidence": 0.9,
+        "observed_frame_count": 2,
+        "tracking_duration_sec": 0.10000000000000009,
+        "max_detection_gap_sec": 0.10000000000000009,
+        "tracking_continuity_score": 0.0,
+        "track_fragmentation_count": 0,
+        "classifier_supported": true,
+        "supported": true
+      },
+      {
+        "start_sec": 2.0,
+        "end_sec": 3.0,
+        "score": null,
+        "modalities": {
+          "classifier": null,
+          "yolo": null,
+          "tracking": null
+        },
+        "classifier_probability": null,
+        "classifier_window_consistency": 1.0,
+        "available_modalities": [],
+        "supporting_detection_count": 0,
+        "supporting_track_ids": [],
+        "mean_detection_confidence": null,
+        "max_detection_confidence": null,
+        "observed_frame_count": 0,
+        "tracking_duration_sec": 0,
+        "max_detection_gap_sec": 0.0,
+        "tracking_continuity_score": null,
+        "track_fragmentation_count": 0,
+        "classifier_supported": false,
+        "supported": false
+      }
+    ],
+    "track_groups": [
+      {
+        "video": "scene.mp4",
+        "class_name": "person",
+        "track_id": "7",
+        "detection_count": 1,
+        "mean_confidence": 0.8,
+        "max_confidence": 0.8,
+        "frame_count": 1,
+        "first_timestamp_sec": 1.1,
+        "last_timestamp_sec": 1.1,
+        "tracking_duration_sec": 0.0,
+        "max_gap_sec": 0.0,
+        "detection_gaps_sec": [],
+        "continuity_score": 0.0,
+        "fragmented": false,
+        "detections": [
+          {
+            "video": "scene.mp4",
+            "frame_number": 11,
+            "csv_frame_number": 11,
+            "timestamp_seconds": 1.1,
+            "csv_timestamp_seconds": 1.1,
+            "timestamp_source": "csv_timestamp",
+            "class_name": "person",
+            "class_id": "0",
+            "confidence": 0.8,
+            "track_id": "7",
+            "bbox": [
+              1.0,
+              1.0,
+              20.0,
+              25.0
+            ]
+          }
+        ]
+      },
+      {
+        "video": "scene.mp4",
+        "class_name": "pistol",
+        "track_id": "7",
+        "detection_count": 1,
+        "mean_confidence": 0.9,
+        "max_confidence": 0.9,
+        "frame_count": 1,
+        "first_timestamp_sec": 1.0,
+        "last_timestamp_sec": 1.0,
+        "tracking_duration_sec": 0.0,
+        "max_gap_sec": 0.0,
+        "detection_gaps_sec": [],
+        "continuity_score": 0.0,
+        "fragmented": false,
+        "detections": [
+          {
+            "video": "scene.mp4",
+            "frame_number": 10,
+            "csv_frame_number": 10,
+            "timestamp_seconds": 1.0,
+            "csv_timestamp_seconds": 1.0,
+            "timestamp_source": "csv_timestamp",
+            "class_name": "pistol",
+            "class_id": "0",
+            "confidence": 0.9,
+            "track_id": "7",
+            "bbox": [
+              1.0,
+              1.0,
+              20.0,
+              25.0
+            ]
+          }
+        ]
+      }
+    ],
+    "available_modalities": [
+      "classifier",
+      "tracking",
+      "yolo"
+    ],
+    "configured_weights": {
+      "classifier": 0.7,
+      "yolo": 0.15,
+      "tracking": 0.15
+    },
+    "weights_calibration_status": "uncalibrated_configuration",
+    "timestamp_source": "csv_timestamp_or_frame_fps_fallback",
+    "csv_timing_validation": {
+      "verified": true,
+      "method": "frame_fps_fallback",
+      "p95_absolute_error_sec": 0.0,
+      "tolerance_sec": 0.25
+    },
+    "tracking_status_record": {
+      "video": "scene.mp4",
+      "status": "completed",
+      "output_csv": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\detections.csv",
+      "output_video": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\videos\\annotated.mp4",
+      "tracking_status_path": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\status.csv",
+      "artifact_selection": "unique_manifest_record",
+      "resolved_status": "completed",
+      "resolved_csv": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\detections.csv",
+      "resolved_video": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\videos\\annotated.mp4"
+    },
+    "tracking_csv_path": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\detections.csv",
+    "tracking_csv_sha256": "90e80b9e6e392e2642d9ea0049f50a20e348539e34326414c54cfc94c78c99cc",
+    "candidate_interval": {
+      "start_sec": 0.0,
+      "end_sec": 3.0
+    },
+    "refined_interval": {
+      "start_sec": 1.0,
+      "end_sec": 2.0
+    },
+    "evidence_clip_interval": {
+      "start_sec": 1.0,
+      "end_sec": 2.0,
+      "context_before_sec": 2.0,
+      "context_after_sec": 2.0
+    },
+    "limitations": [
+      "YOLO and tracking evidence support review but do not prove a crime.",
+      "Weights are uncalibrated; timestamp accuracy is not established without verified reference intervals."
+    ]
+  },
+  "source_video_tracking_manifest": {
+    "category": "Shooting",
+    "source_video_name": "scene.mp4",
+    "source_video_sha256": "1efa6bec820eabc18f5429887b056299e5a3595bc3eccdd7099c60920f7e4743",
+    "status_record": {
+      "video": "scene.mp4",
+      "status": "completed",
+      "output_csv": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\detections.csv",
+      "output_video": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\videos\\annotated.mp4",
+      "tracking_status_path": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\status.csv",
+      "artifact_selection": "unique_manifest_record",
+      "resolved_status": "completed",
+      "resolved_csv": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\detections.csv",
+      "resolved_video": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\videos\\annotated.mp4"
+    },
+    "resolved_csv_path": "C:\\Users\\admin\\Downloads\\ai-crime-scene-evidence-analyzer_v2\\ai-crime-scene-evidence-analyzer\\backend\\reports\\final_demo\\pytest-tmp-rerun-20261120\\basetemp\\test_temporal_service_extracts0\\tracking\\detections.csv",
+    "resolved_csv_sha256": "90e80b9e6e392e2642d9ea0049f50a20e348539e34326414c54cfc94c78c99cc",
+    "annotated_video_alignment": {
+      "verified": true,
+      "tracked_metadata": {
+        "frames": 30,
+        "fps": 10.0,
+        "width": 48,
+        "height": 32
+      }
+    }
+  },
+  "candidate_start_timestamp_sec": 0.0,
+  "candidate_end_timestamp_sec": 3.0,
+  "refined_start_timestamp_sec": 1.0,
+  "refined_end_timestamp_sec": 2.0
+}

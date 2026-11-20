@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 .env
 .env.*
+!.env.example
 .jwt_secret
 backend/.jwt_secret
 node_modules/
@@ -26,6 +27,123 @@ Runs/
 
 # Temporary files
 *.log
+.mongodb-local/
 .DS_Store
 Thumbs.db
 *.bak
+
+# YOLO and training environments
+backend/yolo_cpu_env/
+backend/yolo_training_candidate/
+backend/deepocsort_venv/
+
+# Generated model weights and training artifacts
+backend/weights/
+backend/training/
+backend/yolo_training_candidate/
+backend/tracked_results_drive_import/
+backend/tracking_outputs/
+
+# Large YOLO model files
+yolov8s-world.pt
+
+# Local generated artifacts
+*.log
+
+# Python and local environments
+backend/yolo_cpu_env/
+backend/yolo_training_candidate/
+yolo_cpu_env/
+yolo_training_candidate/
+backend/deepocsort_venv/
+
+# Generated test and temporary environments
+backend/.pt/
+backend/.complete_dashboard_audit_*/
+backend/.custody_reports_regression_*/
+backend/.dashboard_final_regression_*/
+backend/.pytest-mongodb-*/
+
+# Datasets and private media
+datasets/
+samples/
+backend/real_data_pilots/
+backend/tracking_outputs/
+backend/tracked_results_drive_import/
+
+# Backups and generated artifacts
+backups/
+backend/backups/
+scratch/
+frontend/scratch/
+frontend/dist/
+
+# Training artifacts
+backend/training/
+weights/
+backend/weights/
+
+# Generated evidence images in project root
+/*.jpg
+
+# Large experimental model
+backend/models/candidate.pt
+
+# Alternate checkpoint - preserve locally
+backend/models/video_classifier_v2.pth
+
+# Local browser profile and generated demo data
+reports/final_demo/chrome-cdp-profile/
+
+# Generated reports, CCTV review frames and test outputs
+/reports/
+
+# Generated reports, CCTV review frames and test outputs
+/reports/
+
+# Exclude unused experimental model checkpoints
+/backend/models/candidate.pt
+/backend/models/video_classifier_v2.pth
+
+
+# Generated reports and browser profiles
+/reports/
+reports/final_demo/chrome-cdp-profile/
+
+# Python environments and caches
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.venv/
+
+# Frontend dependencies and builds
+node_modules/
+dist/
+frontend/dist/
+
+# Secrets and local databases
+.env
+.env.*
+!.env.example
+*.sqlite3
+mongodb_dump/
+
+# Private datasets and evidence
+datasets/
+uploads/
+samples/
+backend/real_data_pilots/
+backend/tracking_outputs/
+backend/tracked_results_drive_import/
+
+# Backups and temporary files
+backups/
+backend/backups/
+scratch/
+frontend/scratch/
+
+# Unused model checkpoints
+/backend/models/candidate.pt
+/backend/models/video_classifier_v2.pth
+

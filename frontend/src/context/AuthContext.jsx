@@ -19,6 +19,9 @@ export function AuthProvider({ children }) {
   const login = async (username, password) => {
     const res = await api.post('/api/auth/login', { username, password })
     const { access_token, user: u } = res.data
+    if (typeof access_token !== 'string' || !access_token.trim()) {
+      throw new Error('The login response did not include a valid access token.')
+    }
     localStorage.setItem('token', access_token)
     setToken(access_token)
     setUser(u)
@@ -71,7 +74,7 @@ export function AuthProvider({ children }) {
       logout,
       biometricPassed,
       passBiometric,
-      isAuthenticated: !!token
+      isAuthenticated: typeof token === 'string' && token.trim().length > 0
     }}>
       {children}
     </AuthContext.Provider>

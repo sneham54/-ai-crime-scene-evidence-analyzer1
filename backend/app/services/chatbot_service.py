@@ -10,8 +10,29 @@ class OllamaUnavailableError(RuntimeError):
 
 
 class ChatbotService:
+    @staticmethod
+    def _base_url():
+        return (current_app.config.get("OLLAMA_BASE_URL") or current_app.config.get("OLLAMA_HOST") or "http://127.0.0.1:11434").rstrip("/")
+
+    def health(self) -> dict:
+        host = self._base_url()
+        model = current_app.config.get("OLLAMA_MODEL", "llama3.2")
+        try:
+            request = Request(f"{host}/api/tags", headers={"Accept": "application/json"})
+            with urlopen(request, timeout=current_app.config.get("OLLAMA_HEALTH_TIMEOUT_SEC", current_app.config.get("OLLAMA_HEALTH_TIMEOUT", 4))) as response:
+                result = json.loads(response.read().decode("utf-8"))
+            available = [item.get("name", item.get("model", "")) for item in result.get("models", [])]
+            model_available = any(name == model or name.split(":", 1)[0] == model for name in available)
+            return {"status": "connected" if model_available else "unavailable", "base_url": host,
+                    "model": model, "model_available": model_available,
+                    "error": None if model_available else f"Ollama is reachable, but model '{model}' is not installed. Run 'ollama pull {model}' on the Ollama host, then retry."}
+        except (HTTPError, URLError, TimeoutError, OSError, ValueError) as error:
+            return {"status": "unavailable", "base_url": host, "model": model,
+                    "model_available": False,
+                    "error": f"Cannot reach Ollama at {host}. Start Ollama and verify Docker can reach the host address. {error}"}
+
     def answer(self, query: str, context: dict) -> str:
-        host = current_app.config["OLLAMA_HOST"].rstrip("/")
+        host = self._base_url()
         try:
             payload = json.dumps({
                 "model": current_app.config["OLLAMA_MODEL"],
@@ -49,7 +70,7 @@ class ChatbotService:
                 headers={"Content-Type": "application/json"},
                 method="POST",
             )
-            with urlopen(request, timeout=120) as response:
+            with urlopen(request, timeout=current_app.config.get("OLLAMA_CHAT_TIMEOUT_SEC", current_app.config.get("OLLAMA_CHAT_TIMEOUT", 120))) as response:
                 result = json.loads(response.read().decode("utf-8"))
             answer = result.get("message", {}).get("content", "").strip()
         except HTTPError as error:

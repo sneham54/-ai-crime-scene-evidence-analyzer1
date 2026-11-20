@@ -11,6 +11,7 @@ export default function Login() {
   const [evidencePreview, setEvidencePreview] = useState(null)
   const { login, register } = useAuth()
   const navigate = useNavigate()
+  const sessionExpired = new URLSearchParams(window.location.search).get('reason') === 'session-expired'
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -60,6 +61,10 @@ export default function Login() {
           <div className="section-kicker">Secure access</div>
           <h2>{mode === 'login' ? 'Investigator sign in' : 'Create investigator account'}</h2>
           <p className="muted-copy">Use your department credentials to continue.</p>
+
+          {sessionExpired && <p role="status" style={{ color: 'var(--warning)', fontSize: 13 }}>
+            Your session expired or its token is no longer valid. Please sign in again.
+          </p>}
 
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 14 }}>

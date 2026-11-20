@@ -1,0 +1,7 @@
+# Human annotation guide for video classifier audit
+
+Use the video-level template once per source video and the interval template once per event interval. Annotate from the original video without looking at classifier predictions. Record SHA-256 so re-encodes and duplicate clips can be grouped and excluded from splits. Use `review_status=independently_confirmed` only after a second reviewer agrees; otherwise record `needs_review` or `ambiguous`.
+
+For each video, choose exactly one of `Assault`, `Robbery`, `Shooting`, or `Normal` for the dominant dataset task label, and set `is_incident` to `yes`, `no`, or `uncertain`. A `Normal` category is a dataset label, not proof that no incident occurred. For temporal events, enter inclusive start/end frame indices from the original video, the corresponding seconds, and measured source FPS. Leave event fields empty when no event is visible; do not infer that an event is absent solely because the model found none. Create separate interval rows for distinct events and overlapping labels only when human review confirms both.
+
+Keep source groups together when creating training, validation, and held-out test splits. Group normalized source stems, exact SHA-256 duplicates, and known re-encodes across all categories before splitting. Freeze the held-out labels and split before examining model outputs. Report whole-video and temporal-window metrics separately; score boundary accuracy only for independently reviewed intervals.

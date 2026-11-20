@@ -7,7 +7,20 @@ export default function Chatbot({ context }) {
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [health, setHealth] = useState({ status: 'checking', error: 'Checking Ollama connection…' })
   const bottomRef = useRef(null)
+
+  const checkHealth = async () => {
+    setHealth({ status: 'checking', error: 'Checking Ollama connection…' })
+    try {
+      const res = await longTimeoutApi.get('/api/chatbot/health', { timeout: 7000 })
+      setHealth(res.data)
+    } catch (e) {
+      setHealth(e.response?.data || { status: 'unavailable', error: e.userMessage || 'Could not check Ollama. Check the backend connection.' })
+    }
+  }
+
+  useEffect(() => { checkHealth() }, [])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -40,6 +53,10 @@ export default function Chatbot({ context }) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', height: 480 }}>
       <h3 style={{ marginTop: 0 }}>AI Forensic Chatbot</h3>
+      <div role="status" style={{ fontSize: 12, color: health.status === 'connected' ? 'var(--success, #4ade80)' : 'var(--muted)', marginBottom: 8 }}>
+        {health.status === 'connected' ? `Ollama connected · ${health.model}` : health.error || 'Ollama status unavailable'}
+        {health.status !== 'connected' && <button type="button" className="text-button" onClick={checkHealth} style={{ marginLeft: 8 }}>Check again</button>}
+      </div>
 
       <div style={{
         flex: 1, overflowY: 'auto', background: '#0f172a', borderRadius: 8,

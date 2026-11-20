@@ -1,0 +1,8 @@
+# Isolated tracker environment only. The Flask requirements.txt remains unchanged.
+torch==2.8.0+cpu
+torchvision==0.23.0+cpu
+ultralytics==8.4.174
+opencv-python==4.10.0.84
+numpy==1.26.4
+lap==0.5.14
+lapx==0.10.0

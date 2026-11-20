@@ -7,6 +7,7 @@ import api, { BACKEND_URL } from '../services/api'
 export default function CaseReports({ analysisResult }) {
   const [loading, setLoading] = useState(false)
   const [lastReport, setLastReport] = useState(null)
+  const [lastJsonReport, setLastJsonReport] = useState(null)
   const [error, setError] = useState('')
   const [caseId, setCaseId] = useState('CASE-' + Date.now().toString().slice(-8))
   const [description, setDescription] = useState(
@@ -32,7 +33,8 @@ export default function CaseReports({ analysisResult }) {
 
   const downloadReport = async (path, filename) => {
     const response = await api.get(path, { responseType: 'blob' })
-    const pdf = new Blob([response.data], { type: 'application/pdf' })
+    const mimeType = filename?.toLowerCase().endsWith('.json') ? 'application/json' : 'application/pdf'
+    const pdf = new Blob([response.data], { type: mimeType })
     const objectUrl = URL.createObjectURL(pdf)
     const link = document.createElement('a')
     link.href = objectUrl
@@ -42,6 +44,19 @@ export default function CaseReports({ analysisResult }) {
     link.remove()
     window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000)
   }
+
+  const buildReportPayload = () => ({
+    case: { case_id: caseId, description },
+    detections: analysisResult?.detections || [],
+    risk: analysisResult?.risk || {},
+    annotated_image: analysisResult?.annotated_image || null,
+    evidence_id: analysisResult?.evidence_id || analysisResult?.evidence?.id || null,
+    file_name: analysisResult?.file_name || null,
+    analyzed_at: analysisResult?.analyzed_at || null,
+    video_result: analysisResult?.frame_results
+      ? Object.fromEntries(Object.entries(analysisResult).filter(([key]) => key !== 'media_preview' && key !== 'frame_thumbnails'))
+      : null,
+  })
 
   const generateReport = async () => {
     if (!analysisResult || !(analysisResult.detections || []).length) {
@@ -56,21 +71,7 @@ export default function CaseReports({ analysisResult }) {
     setError('')
 
     try {
-      const payload = {
-        case: {
-          case_id: caseId,
-          description: description,
-        },
-        detections: analysisResult.detections || [],
-        risk: analysisResult.risk || {},
-        annotated_image: analysisResult.annotated_image || null,
-        evidence_id: analysisResult.evidence_id || analysisResult.evidence?.id || null,
-        file_name: analysisResult.file_name || null,
-        analyzed_at: analysisResult.analyzed_at || null,
-        video_result: analysisResult.frame_results ? analysisResult : null,
-      }
-
-      const res = await api.post('/api/report/generate', payload)
+      const res = await api.post('/api/report/generate', buildReportPayload())
       setLastReport(res.data)
 
       if (res.data.download_url) {
@@ -79,6 +80,21 @@ export default function CaseReports({ analysisResult }) {
     } catch (e) {
       console.error(e)
       setError(e.response?.data?.error || e.userMessage || e.message || 'Report generation failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const generateJsonReport = async () => {
+    if (!analysisResult) return
+    setLoading(true)
+    setError('')
+    try {
+      const res = await api.post('/api/report/generate-json', buildReportPayload())
+      setLastJsonReport(res.data)
+      await downloadReport(res.data.download_url, res.data.report_name)
+    } catch (e) {
+      setError(e.response?.data?.error || e.userMessage || e.message || 'JSON report generation failed')
     } finally {
       setLoading(false)
     }
@@ -137,6 +153,10 @@ export default function CaseReports({ analysisResult }) {
         {loading ? 'Generating PDF…' : 'Generate PDF Forensic Report'}
       </button>
 
+      <button className="secondary" onClick={generateJsonReport} disabled={loading || !hasAnalysis} style={{ marginLeft: 10 }}>
+        {loading ? 'Generating…' : 'Download JSON Investigation Report'}
+      </button>
+
       {error && (
         <p style={{ color: 'var(--danger)', fontSize: 13, marginTop: 12 }}>{error}</p>
       )}
@@ -163,6 +183,14 @@ export default function CaseReports({ analysisResult }) {
           </a>
         </div>
       )}
+
+      {lastJsonReport && <p style={{ color: 'var(--success)', fontSize: 13, marginTop: 12 }}>
+        JSON report saved: <a href={downloadUrl(lastJsonReport.download_url)} onClick={event => {
+          event.preventDefault()
+          downloadReport(lastJsonReport.download_url, lastJsonReport.report_name)
+            .catch(downloadError => setError(downloadError.message || 'JSON report download failed.'))
+        }} style={{ color: 'var(--primary)' }}>{lastJsonReport.report_name}</a>
+      </p>}
 
       {/* Recent reports list */}
       {recentReports.length > 0 && (

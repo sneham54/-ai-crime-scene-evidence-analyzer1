@@ -167,6 +167,12 @@ class ReportService:
         ]))
         story.append(risk_table)
 
+        warnings = risk.get("warnings") or []
+        if warnings:
+            story.append(Paragraph("<b>Evidence limitations:</b>", normal))
+            for warning in warnings:
+                story.append(Paragraph(escape(str(warning)), normal))
+
         reasons = risk.get("reasons") or []
         if reasons:
             story.append(Spacer(1, 4))
@@ -188,7 +194,7 @@ class ReportService:
                     str(i),
                     str(d.get("class", "")),
                     str(d.get("category", "")),
-                    f"{float(d.get('confidence', 0)):.2f}",
+                    f"{float(d['confidence']):.2f}" if d.get("confidence") is not None else "Unavailable",
                     bbox_str,
                 ])
             det_table = Table(det_data, colWidths=[0.4*inch, 1.3*inch, 1.3*inch, 0.9*inch, 2.8*inch])
@@ -229,15 +235,158 @@ class ReportService:
             confidence_text = f"{float(confidence):.1%}" if confidence is not None else "Unavailable"
             story.append(Paragraph(f"Video classifier result: <b>{event_label}</b> · Confidence: {confidence_text}", normal))
             story.append(Paragraph("This event classification is produced by the whole-video classifier. YOLO object detections are separate visual evidence and do not establish that the event occurred.", normal))
+            status = escape(str(classification.get("classification_status", "provisional")))
+            story.append(Paragraph(f"Classifier evidence status: <b>{status}</b>. Predictions are provisional and have not been independently validated. A Normal prediction does not prove that no incident occurred.", normal))
+            alternatives = classification.get("alternative_predictions") or []
+            if alternatives:
+                alternative_text = ", ".join(
+                    f"{escape(str(item.get('label', 'Unavailable')))} ({float(item['confidence']):.1%})"
+                    if item.get("confidence") is not None else escape(str(item.get("label", "Unavailable")))
+                    for item in alternatives
+                )
+                story.append(Paragraph(f"Conflicting temporal-window alternative: {alternative_text}. These are not separate incident findings.", normal))
+            info = video_result.get("video_info") or {}
+            duration = info.get("duration_sec")
+            story.append(Paragraph(
+                f"Source video: {escape(os.path.basename(source_filename or 'Not provided'))} · "
+                f"Duration: {float(duration):.3f} s" if duration is not None else
+                f"Source video: {escape(os.path.basename(source_filename or 'Not provided'))} · Duration unavailable",
+                normal,
+            ))
+            coverage = info.get("analysis_coverage", "unknown")
+            coverage_label = {"entire_video": "Entire video", "portion": "Partial video", "unknown": "Unknown"}.get(coverage, "Unknown")
+            first_ts = info.get("first_analyzed_timestamp_sec")
+            last_ts = info.get("last_analyzed_timestamp_sec")
+            interval = info.get("sampling_interval_frames")
+            processed = info.get("processed_frames", info.get("frames_analyzed", 0))
+            total_frames = info.get("total_frames")
+            first_text = f"{float(first_ts):.3f} s" if first_ts is not None else "Unavailable"
+            last_text = f"{float(last_ts):.3f} s" if last_ts is not None else "Unavailable"
+            fps = info.get("fps")
+            fps_text = f"{float(fps):.3f}" if fps is not None else "Unavailable"
+            story.append(Paragraph(
+                f"VIDEO PROCESSING COVERAGE: <b>{coverage_label}</b> · "
+                f"YOLO processed {processed} of {total_frames if total_frames is not None else 'unknown'} frames "
+                f"at {fps_text} FPS (sampling interval: {interval if interval is not None else 'unknown'} frames); "
+                f"analyzed timestamps: {first_text}–{last_text}.", normal,
+            ))
+            if info.get("frame_limit_reached") or info.get("duration_limit_reached"):
+                story.append(Paragraph("A configured processing limit was reached. YOLO detections represent only the reported interval.", normal))
+            classifier_coverage = info.get("classifier_sampling_coverage") or {}
+            if classifier_coverage:
+                classifier_first = classifier_coverage.get("first_sample_timestamp_sec")
+                classifier_last = classifier_coverage.get("last_sample_timestamp_sec")
+                classifier_span = (
+                    f"{float(classifier_first):.3f}–{float(classifier_last):.3f} s"
+                    if classifier_first is not None and classifier_last is not None else
+                    f"frames {classifier_coverage.get('first_sample_frame', 'unknown')}–{classifier_coverage.get('last_sample_frame', 'unknown')}"
+                )
+                classifier_scope = "entire eligible clip" if classifier_coverage.get("covered_entire_video") else "duration-capped clip"
+                story.append(Paragraph(
+                    f"CNN-LSTM sampling coverage: {classifier_coverage.get('sampled_frame_count', 'unknown')} frames "
+                    f"spanning {classifier_span}; {classifier_scope}.", normal,
+                ))
+            tracking_match = video_result.get("tracking_data_match") or {}
+            tracking = video_result.get("tracking") or {}
+            story.append(Paragraph(
+                f"TRACKING EVIDENCE: <b>{escape(str(tracking_match.get('status') or 'Unavailable'))}</b> · "
+                f"{escape(str(tracking_match.get('artifact_type') or tracking.get('method') or 'Artifact unavailable'))} · "
+                f"{tracking_match.get('detection_count', tracking.get('detection_count', 0))} detections · "
+                f"{tracking_match.get('tracking_id_count', tracking.get('tracking_id_count', 'Unavailable'))} unique tracking IDs. "
+                "Tracking provenance is reported separately from classifier confidence.", normal,
+            ))
+            candidate_events = video_result.get("activity_events") or []
+            story.append(Paragraph("TIMESTAMPED ACTIVITY CANDIDATES", heading_style))
+            if candidate_events:
+                candidate_rows = [["Category", "Start (s)", "End (s)", "Confidence", "Objects", "Track IDs"]]
+                for event in candidate_events:
+                    candidate_rows.append([
+                        escape(str(event.get("category") or "Unavailable")),
+                        f"{float(event['start_timestamp_sec']):.3f}" if event.get("start_timestamp_sec") is not None else "Unavailable",
+                        f"{float(event['end_timestamp_sec']):.3f}" if event.get("end_timestamp_sec") is not None else "Unavailable",
+                        f"{float(event['confidence']):.1%}" if event.get("confidence") is not None else "Unavailable",
+                        escape(", ".join(event.get("detected_objects") or []) or "None recorded"),
+                        escape(", ".join(map(str, event.get("tracking_ids") or [])) or "None available"),
+                    ])
+                candidate_table = Table(candidate_rows, colWidths=[0.85*inch, 0.7*inch, 0.7*inch, 0.75*inch, 1.45*inch, 1.2*inch], repeatRows=1)
+                candidate_table.setStyle(TableStyle([
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1b263b")),
+                    ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+                    ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                    ("FONTSIZE", (0, 0), (-1, -1), 7),
+                    ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#94a3b8")),
+                    ("PADDING", (0, 0), (-1, -1), 3),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ]))
+                story.append(candidate_table)
+                story.append(Paragraph("Activity intervals are unverified candidate locations; timestamps do not establish an incident.", small))
+            else:
+                story.append(Paragraph("No timestamped activity candidate intervals were recorded. This does not establish absence of an incident.", normal))
+
+            evidence_events = video_result.get("evidence_events") or []
+            story.append(Paragraph("OBJECT-DETECTION EVENT GROUPS", heading_style))
+            story.append(Paragraph(
+                "These entries group YOLO object observations across sampled frames. They are unverified object-detection events, not confirmed criminal incidents. Duration is the observed span between first and last sampled detections; a single-frame event has a zero-second observed span.",
+                normal,
+            ))
+            if evidence_events:
+                event_rows = [["Observed start–end", "Class", "Span (s)", "Obs.", "Confidence min / mean / max", "Review", "Representative frame"]]
+                for event in evidence_events:
+                    start = event.get("start_timestamp_sec")
+                    end = event.get("end_timestamp_sec")
+                    time_span = (
+                        f"{float(start):.2f}–{float(end):.2f}"
+                        if start is not None and end is not None else
+                        f"frames {event.get('first_frame_number', '?')}–{event.get('last_frame_number', '?')}"
+                    )
+                    summary = event.get("confidence_summary") or {
+                        "min": event.get("minimum_confidence"),
+                        "mean": event.get("mean_confidence"),
+                        "max": event.get("maximum_confidence", event.get("confidence")),
+                    }
+                    confidence_text = " / ".join(
+                        f"{float(summary[key]):.2f}" if summary.get(key) is not None else "—"
+                        for key in ("min", "mean", "max")
+                    )
+                    evidence_path = event.get("representative_evidence_image") or ""
+                    evidence_name = str(evidence_path).rsplit("/", 1)[-1] or "Unavailable"
+                    evidence_label = f"Frame {event.get('representative_frame_number', '?')} · {evidence_name}"
+                    event_rows.append([
+                        time_span, escape(str(event.get("evidence_class", event.get("class", "")))),
+                        f"{float(event.get('duration_sec') or 0):.2f}",
+                        str(event.get("observation_count", 0)), confidence_text,
+                        escape(str(event.get("review_status") or "Needs review")), escape(evidence_label),
+                    ])
+                event_table = Table(event_rows, colWidths=[0.95*inch, 0.65*inch, 0.45*inch, 0.35*inch, 1.2*inch, 0.8*inch, 1.55*inch], repeatRows=1)
+                event_table.setStyle(TableStyle([
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1b263b")),
+                    ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+                    ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                    ("FONTSIZE", (0, 0), (-1, -1), 7),
+                    ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#94a3b8")),
+                    ("PADDING", (0, 0), (-1, -1), 3),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ]))
+                story.append(event_table)
+            else:
+                story.append(Paragraph("No object-detection event groups were recorded.", normal))
+            limitation = video_result.get("candidate_interval_limitation")
+            if limitation:
+                story.append(Paragraph("CANDIDATE INTERVAL STATUS", heading_style))
+                story.append(Paragraph(escape(str(limitation)), normal))
             timeline = video_result.get("timeline") or video_result.get("event_timeline") or []
             story.append(Paragraph("EVIDENCE TIMELINE", heading_style))
             if timeline:
-                timeline_rows = [["Timestamp", "Frame", "Detection", "YOLO confidence"]]
+                timeline_rows = [["Timestamp", "Frame", "Detection", "Confidence", "Track ID", "BBox (x1,y1,x2,y2)"]]
                 for item in timeline:
                     seconds = item.get("timestamp_sec")
                     timestamp = f"{float(seconds):.1f} s" if seconds is not None else "Unavailable"
-                    timeline_rows.append([timestamp, str(item.get("frame_number", "")), escape(str(item.get("class_name", item.get("class", "")))), f"{float(item.get('confidence', 0)):.1%}"])
-                timeline_table = Table(timeline_rows, colWidths=[1.1*inch, 0.8*inch, 2.8*inch, 1.4*inch], repeatRows=1)
+                    confidence_value = item.get("confidence")
+                    confidence_text = f"{float(confidence_value):.1%}" if confidence_value is not None else "Unavailable"
+                    bbox = item.get("bbox") or []
+                    bbox_text = ", ".join(str(value) for value in bbox) or "Unavailable"
+                    timeline_rows.append([timestamp, str(item.get("frame_number", "")), escape(str(item.get("class_name", item.get("class", "")))), confidence_text, str(item.get("track_id") if item.get("track_id") is not None else "Unavailable"), escape(bbox_text)])
+                timeline_table = Table(timeline_rows, colWidths=[0.75*inch, 0.55*inch, 1.1*inch, 0.85*inch, 0.75*inch, 2.15*inch], repeatRows=1)
                 timeline_table.setStyle(TableStyle([
                     ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1b263b")),
                     ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),

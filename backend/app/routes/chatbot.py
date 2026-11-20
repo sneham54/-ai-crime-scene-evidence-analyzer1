@@ -4,6 +4,11 @@ from app.services.chatbot_service import ChatbotService, OllamaUnavailableError
 
 bp = Blueprint("chatbot", __name__)
 
+@bp.route("/health", methods=["GET"])
+def health():
+    result = ChatbotService().health()
+    return jsonify(result), (200 if result["status"] == "connected" else 503)
+
 @bp.route("/query", methods=["POST"])
 @jwt_required(optional=True)
 def query():
